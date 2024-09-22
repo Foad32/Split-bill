@@ -24,33 +24,39 @@ const initialRes = [
 
 function App() {
   const [resturantsInfo, setResturantsInfo] = useState(initialRes);
+  const [selectRes, setSelectRes] = useState(null);
+
+  function SelectedRes(SelectedRes) {
+    setSelectRes(prevRes =>
+      prevRes?.id == SelectedRes.id ? null : SelectedRes
+    )
+  }
+
   return (
     <div className='app'>
       <div className='sidebar'>
-        <Resturants onResInfo={resturantsInfo} />
+        <Resturants onResInfo={resturantsInfo} onSelect={SelectedRes} selectRes={selectRes} />
         <FormAddResturant />
       </div>
-      <SplitBillFrom />
+      {selectRes && <SplitBillFrom />}
     </div>
   )
 }
 
 export default App
 
-function Resturants({ onResInfo }) {
+function Resturants({ onResInfo, onSelect, selectRes }) {
 
   return (
     <ul>
-      {onResInfo.map(resInfo => <ResturantInfo info={resInfo} />)}
+      {onResInfo.map(resInfo => <ResturantInfo info={resInfo} onSelect={onSelect} selectRes={selectRes} />)}
     </ul>
   )
 }
 
-function ResturantInfo({ info }) {
+function ResturantInfo({ info, onSelect, selectRes }) {
+  const isSelected = selectRes?.id === info.id
 
-  function handleSelect(e) {
-    e.preventDefault();
-  }
   return (
     <li>
       <img src={info.image} alt={info.resName} />
@@ -61,7 +67,7 @@ function ResturantInfo({ info }) {
       {info.balance < 0 && <p className='red'>{`You owe ${info.resName} ${Math.abs(info.balance)}`}</p>}
 
 
-      <Button clickIt={handleSelect}>Select</Button>
+      <Button clickIt={() => onSelect(info)}>{isSelected ? "Close" : "Select"}</Button>
     </li>
   )
 }
