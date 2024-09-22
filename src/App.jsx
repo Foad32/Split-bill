@@ -126,6 +126,9 @@ function SplitBillFrom() {
       <input type="text" />
 
       <label>X's expense</label>
+      <input type="text" />
+
+      <label>Who is paying the bill</label>
       <select>
         <option value="user">You</option>
         <option value="resturant">X</option>
