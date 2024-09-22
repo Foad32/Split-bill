@@ -1,35 +1,115 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const initialRes = [
+  {
+    id: 2244,
+    resName: "Baran",
+    image: "https://i.pravatar.cc/48?u=933372",
+    balance: 20
+  },
+  {
+    id: 3344,
+    resName: "FoodHunter",
+    image: "https://i.pravatar.cc/48?u=933372",
+    balance: -56
+  },
+  {
+    id: 4466,
+    resName: "ChickenFamily",
+    image: "https://i.pravatar.cc/48?u=933372",
+    balance: 43
+  }
+]
 
+function App() {
+  const [resturantsInfo, setResturantsInfo] = useState(initialRes);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='app'>
+      <div className='sidebar'>
+        <Resturants onResInfo={resturantsInfo} />
+        <FormAddResturant />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+      <SplitBillFrom />
+    </div>
   )
 }
 
 export default App
+
+function Resturants({ onResInfo }) {
+
+  return (
+    <ul>
+      {onResInfo.map(resInfo => <ResturantInfo info={resInfo} />)}
+    </ul>
+  )
+}
+
+function ResturantInfo({ info }) {
+
+  function handleSelect(e) {
+    e.preventDefault();
+  }
+  return (
+    <li>
+      <img src={info.image} alt={info.resName} />
+      <h4>{info.resName}</h4>
+
+      {info.balance == 0 && <p>{`${info.resName} is even with you`}</p>}
+      {info.balance > 0 && <p className='green'>{`${info.resName} ows you ${Math.abs(info.balance)})`}</p>}
+      {info.balance < 0 && <p className='red'>{`You owe ${info.resName} ${Math.abs(info.balance)}`}</p>}
+
+
+      <Button clickIt={handleSelect}>Select</Button>
+    </li>
+  )
+}
+
+function Button({ children, clickIt }) {
+  return <button className='button' onClick={clickIt}>{children}</button>
+}
+
+function FormAddResturant() {
+  function handleAdd(e) {
+    e.preventDefault();
+  }
+  return (
+    <form className='form-add-friend'>
+      <label>Resturant name</label>
+      <input type="text" />
+
+      <label>Resturant Image</label>
+      <input type="text" />
+
+      <Button clickIt={handleAdd}>Add form</Button>
+    </form>
+  )
+}
+
+function SplitBillFrom() {
+  function handleSubmit() {
+
+  }
+  return (
+    <form className='form-split-bill' onSubmit={handleSubmit}>
+      <h2>Split title with X</h2>
+
+      <label>Bill value</label>
+      <input type="text" />
+
+      <label>Your expense</label>
+      <input type="text" />
+
+      <label>X's expense</label>
+      <select>
+        <option value="user">You</option>
+        <option value="resturant">X</option>
+      </select>
+
+
+      <Button type="submit">Split bill</Button>
+
+    </form>
+  )
+}
