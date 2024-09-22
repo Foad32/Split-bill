@@ -32,11 +32,15 @@ function App() {
     )
   }
 
+  function addresturant(res) {
+    setResturantsInfo(prev => [...prev, res])
+  }
+
   return (
     <div className='app'>
       <div className='sidebar'>
         <Resturants onResInfo={resturantsInfo} onSelect={SelectedRes} selectRes={selectRes} />
-        <FormAddResturant />
+        <FormAddResturant onAddRes={addresturant} />
       </div>
       {selectRes && <SplitBillFrom />}
     </div>
@@ -76,19 +80,33 @@ function Button({ children, clickIt }) {
   return <button className='button' onClick={clickIt}>{children}</button>
 }
 
-function FormAddResturant() {
+function FormAddResturant({ onAddRes }) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
   function handleAdd(e) {
     e.preventDefault();
+    if (!name || !image) return;
+    const id = crypto.randomUUID();
+    const newResturant = {
+      resName: name,
+      image: `${image}?=${id}`,
+      balance: 0,
+      id
+    }
+
+    onAddRes(newResturant)
+    setName("")
+    setImage("https://i.pravatar.cc/48")
   }
   return (
-    <form className='form-add-friend'>
+    <form className='form-add-friend' onSubmit={handleAdd}>
       <label>Resturant name</label>
-      <input type="text" />
+      <input type="text" value={name} onChange={e => setName(e.target.value)} />
 
       <label>Resturant Image</label>
-      <input type="text" />
+      <input type="text" value={image} onChange={e => setImage(e.target / value)} />
 
-      <Button clickIt={handleAdd}>Add form</Button>
+      <Button>Add form</Button>
     </form>
   )
 }
